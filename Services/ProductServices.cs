@@ -3,34 +3,30 @@ using WebApplication1.Models;
 
 namespace WebApplication1.Services
 {
-    public class ProductServices
+    public class ProductServices : IProductServices
     {
-        private static string db_source = "priappserver.database.windows.net";
-        private static string db_user = "sqladmin";
-        private static string db_password = "Admin@123";
-        private static string db_database = "ProductDb";
-
-        private SqlConnection GetConnection()
+        private IConfiguration _configuration;
+        public string connectionString = string.Empty;
+        public ProductServices(IConfiguration configuration)
         {
-           var _builder = new  SqlConnectionStringBuilder();
-            _builder.DataSource = db_source;
-            _builder.UserID = db_user;
-            _builder.Password = db_password;
-            _builder.InitialCatalog = db_database;
-            return new SqlConnection(_builder.ConnectionString);
+            _configuration = configuration;
+            connectionString = _configuration.GetConnectionString("Sqlconnection");
+
+
         }
+
 
         public List<Product> GetProduct()
         {
-            SqlConnection con = GetConnection();
+            SqlConnection con = new SqlConnection(connectionString);
             List<Product> products = new List<Product>();
             string query = "select * from Products";
-           
-            using(SqlCommand cmd = new SqlCommand(query, con))
+
+            using (SqlCommand cmd = new SqlCommand(query, con))
             {
                 con.Open();
                 var dr = cmd.ExecuteReader();
-                while(dr.Read())
+                while (dr.Read())
                 {
                     products.Add(new Product
                     {

@@ -9,10 +9,16 @@ namespace WebApplication1.Pages
     public class IndexModel : PageModel
     {
         public List<Product> Products;
+        private readonly IProductServices _services;
+        public IndexModel(IProductServices services)
+        {
+            _services = services;
+                
+        }
         public void OnGet()
         {
-          ProductServices productServices = new ProductServices();
-            Products = productServices.GetProduct();
+         
+            Products = _services.GetProduct();
 
         }
     }
